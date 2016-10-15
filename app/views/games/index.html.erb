@@ -1,1 +1,17 @@
+
+<div id='container'>
 <script src='../../assets/javascripts/phasergame.js'></script>
+</div>
+
+<form id='game_form' action='/games' method='post'>
+  <input id='game_score' type='hidden' name='score' value=''>
+</form>
+
+
+
+<div id='play_again'>
+<div id='final_score'></div>
+<form action='/games' method='get'>
+<input type='submit' value='Play again?'>
+</form>
+</div>

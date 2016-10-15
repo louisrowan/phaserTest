@@ -2,6 +2,8 @@ var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, creat
 
 var cursors;
 var score = 0;
+var lives = 5;
+var highscore = 0
 
 function preload() {
   game.load.image('tux', '/assets/frog.png');
@@ -36,17 +38,46 @@ function create() {
   cursors = game.input.keyboard.createCursorKeys();
   game.input.onDown.add(go_fullscreen, this);
 
+  livesText = game.add.text(32, 500, 'Lives: ' + lives, { font: '20px Arial', fill: '#ffffff', align: 'left'});
   scoreText = game.add.text(32, 550, 'bugs eaten: ', { font: '20px Arial', fill: '#ffffff', align: 'left'});
+  highScoreText = game.add.text(32, 450, 'High Score: ' + highscore, { font: '20px Arial', fill: '#ffffff', align: 'left'});
 }
 
 function update() {
   playerUpdate();
   carUpdate();
   rightCarUpdate();
+  bugUpdate();
 
   game.physics.arcade.overlap(players, bugs, playerBugCollisionHandler, null, this);
   game.physics.arcade.overlap(cars, bugs, carBugCollisionHandler, null, this);
   game.physics.arcade.overlap(rightCars, bugs, carBugCollisionHandler, null, this);
+  game.physics.arcade.overlap(rightCars, players, carPlayerCollisionHandler, null, this);
+  game.physics.arcade.overlap(cars, players, carPlayerCollisionHandler, null, this);
+}
+
+function carPlayerCollisionHandler(car, player){
+  player.destroy();
+  if ( lives > 1 ){
+      createPlayer(300, 300, -500, 500);
+      lives = lives - 1;
+      livesText.text = 'Lives: ' + lives;
+  } else {
+    livesText.text = 'Game over';
+    if (score > highscore){
+      highscore = score;
+      highScoreText.text = 'High Score: ' + highscore;
+      document.getElementById('game_score').value = score;
+      submitScore();
+    }
+    //cars.removeAll();
+  }
+}
+
+function bugUpdate(){
+  bugs.forEach(function(b){
+
+  })
 }
 
 function carBugCollisionHandler(car, bug){
@@ -104,9 +135,9 @@ function createPlayer(x, y, j, v){
 }
 
 function playerUpdate(){
-  game.physics.arcade.collide(players, players);
-  game.physics.arcade.collide(players, cars);
-  game.physics.arcade.collide(players, rightCars);
+  // game.physics.arcade.collide(players, players);
+  // game.physics.arcade.collide(players, cars);
+  // game.physics.arcade.collide(players, rightCars);
   players.forEach(function(p){
     p.body.velocity.x = 0;
     if(cursors.left.isDown){
