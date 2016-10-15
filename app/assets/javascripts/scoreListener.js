@@ -1,7 +1,3 @@
-$(document).ready(function(){
-  formListener();
-  console.log('I am here')
-})
 
 
 
