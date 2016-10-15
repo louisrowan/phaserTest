@@ -1,0 +1,17 @@
+<%= form_for(fraction) do |f| %>
+  <% if fraction.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(fraction.errors.count, "error") %> prohibited this fraction from being saved:</h2>
+
+      <ul>
+      <% fraction.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

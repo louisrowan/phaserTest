@@ -1,0 +1,89 @@
+// Place all the styles related to the fractions controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#game_table {
+
+  margin: auto;
+
+  td {
+    width: 150px;
+    height: 150px;
+    box-shadow: 2px 2px 2px #888888;
+    vertical-align: top;
+    text-align: center;
+    font-size: 1.5em;
+    padding-top: 60px;
+    box-sizing: border-box;
+    background-color: whitesmoke;
+
+
+  }
+
+  td:hover {
+    box-shadow: 4px 4px 4px #888888;
+    font-weight: bold;
+  }
+
+  .active {
+    background-color: yellow;
+  }
+
+  .correct {
+    background-color: gray;
+    color: transparent;
+  }
+
+  .correct:hover {
+    color: transparent;
+  }
+
+
+}
+
+#timer {
+  font-size: 2em;
+  color: blue;
+  width: 25%;
+  margin: auto;
+  padding: 20px;
+  text-align: center;
+  background-color: whitesmoke;
+}
+
+
+
+#new_table {
+
+    margin: auto;
+
+  td {
+    width: 150px;
+    height: 150px;
+    box-shadow: 2px 2px 2px #888888;
+    vertical-align: top;
+    text-align: center;
+    font-size: 1.5em;
+    padding-top: 60px;
+    box-sizing: border-box;
+    background-color: whitesmoke;
+}
+
+
+  .c1 {
+    background-color: lightblue;
+  }
+
+  .c2 {
+    background-color: lightgray;
+  }
+
+  .c3 {
+    background-color: pink;
+  }
+
+.active {
+    background-color: yellow;
+  }
+
+
+}

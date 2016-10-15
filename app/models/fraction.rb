@@ -1,0 +1,2 @@
+class Fraction < ApplicationRecord
+end
