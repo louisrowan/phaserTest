@@ -5,7 +5,9 @@ $(document).ready(function(){
 })
 
 var updateEquationText = function(){
+  if (!gameIsOver){
   $('#equation_text_div').html(current_equation.problem)
+  }
 }
 
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
@@ -16,6 +18,7 @@ var two;
 var three;
 var four;
 var questionTimer;
+var gameIsOver = false
 
 function problem(problem, truth){
   this.problem = problem;
@@ -28,7 +31,13 @@ new problem('1 + 1 = 8', 'false'),
 new problem('10 / 2 = 5', 'true'),
 new problem('12 + 4 = 18', 'false'),
 new problem('6 * 2 = 12', 'true'),
-new problem('9 + 6 = 13', 'false')
+new problem('9 + 6 = 13', 'false'),
+new problem('1 + 5 = 6', 'true'),
+new problem('3 * 4 = 16', 'false'),
+new problem('2 / 2 = 1', 'true'),
+new problem('4 + 4 = 16', 'false'),
+new problem('1 * 8 = 8', 'true'),
+new problem('128 + 1 = 128', 'false')
 ]
 
 var current_equation
@@ -42,6 +51,7 @@ function preload() {
   game.load.image('bug', '/assets/bug.png')
   game.load.image('car1', '/assets/car1.png');
   game.load.image('car3', '/assets/car3.png');
+  game.load.image('police1', '/assets/police1.png')
 }
 
 function create(){
@@ -62,6 +72,7 @@ function create(){
     cars = game.add.group();
     cars.enableBody = true;
     createCar(game.width/2, 250)
+    createCar(game.width + 300, 0)
 
     current_equation = equations[Math.floor(Math.random()*(equations.length - 0))]
     questionTimer = 0;
@@ -88,6 +99,8 @@ function update(){
   carUpdate();
 
   game.physics.arcade.overlap(players, bugs, playerBugCollisionHandler, null, this);
+  game.physics.arcade.overlap(players, cars, playerCarCollisionHandler, null, this);
+  game.physics.arcade.overlap(cars, bugs, carBugCollisionHandler, null, this);
 
   gameOver();
 
@@ -97,6 +110,24 @@ function update(){
     current_equation = equations[Math.floor(Math.random()*(equations.length - 0))]
     // MathQuestionText.text = current_equation.problem
   }
+}
+
+function carBugCollisionHandler(car, bug){
+  bug.x = Math.random()*(game.width - 20)
+  bug.y = Math.random()*(game.height - 20)
+}
+
+function playerCarCollisionHandler(player, car){
+  player.alpha = .5
+  player.health = 'false';
+  setTimeout(function(){
+    updatePlayerHealth(player);
+  }, 5000);
+}
+
+function updatePlayerHealth(player){
+  player.alpha = 1;
+  player.health = 'true';
 }
 
 function playerBugCollisionHandler(player, bug){
@@ -131,7 +162,8 @@ function playerBugCollisionHandler(player, bug){
 
 function createPlayer(x, y, id){
   var player = players.create(x, y, 'tux');
-  player.player_id = id
+  player.player_id = id;
+  player.health = 'true';
   player.body.collideWorldBounds = true;
 }
 
@@ -141,14 +173,14 @@ function playerUpdate(){
     if (p.player_id === 1){
           p.body.velocity.x = 0;
                 if(cursors.left.isDown){
-                  p.body.velocity.x = -200;
+                  p.body.velocity.x = -200*p.alpha;
                 }else if(cursors.right.isDown){
-                  p.body.velocity.x = 200;
+                  p.body.velocity.x = 200*p.alpha;
                 }
                 if(cursors.up.isDown){
-                  p.body.velocity.y = -200;
+                  p.body.velocity.y = -200*p.alpha;
                 }else if(cursors.down.isDown){
-                  p.body.velocity.y = 200;
+                  p.body.velocity.y = 200*p.alpha;
                 } else {
                   p.body.velocity.y = 0;
                 }
@@ -156,14 +188,14 @@ function playerUpdate(){
     if (p.player_id === 2){
           p.body.velocity.x = 0;
                 if(one.isDown){
-                  p.body.velocity.x = -200;
+                  p.body.velocity.x = -200*p.alpha;
                 }else if(four.isDown){
-                  p.body.velocity.x = 200;
+                  p.body.velocity.x = 200*p.alpha;
                 }
                 if(three.isDown){
-                  p.body.velocity.y = -200;
+                  p.body.velocity.y = -200*p.alpha;
                 }else if(two.isDown){
-                  p.body.velocity.y = 200;
+                  p.body.velocity.y = 200*p.alpha;
                 } else {
                   p.body.velocity.y = 0;
                 }
@@ -174,8 +206,12 @@ function playerUpdate(){
 
 function gameOver(){
   if (playerOneScore >= 5 || playerTwoScore >= 5){
+    gameIsOver = true;
     players.forEach(function(p){
       p.kill();
+    })
+    cars.forEach(function(c){
+      c.kill();
     })
     var winner;
     if (playerOneScore > playerTwoScore){
@@ -188,7 +224,7 @@ function gameOver(){
 }
 
 function createCar(x, y){
-  var car = cars.create(x, y, 'car1')
+  var car = cars.create(x, y, 'police1')
   car.body.immovable = true;
 }
 
