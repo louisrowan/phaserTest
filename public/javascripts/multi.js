@@ -19,6 +19,7 @@ var three;
 var four;
 var questionTimer;
 var gameIsOver = false
+var hummerSpawned = false
 
 function problem(problem, truth){
   this.problem = problem;
@@ -52,6 +53,7 @@ function preload() {
   game.load.image('car1', '/assets/car1.png');
   game.load.image('car3', '/assets/car3.png');
   game.load.image('police1', '/assets/police1.png')
+  game.load.image('hummer1', '/assets/limo1.png')
 }
 
 function create(){
@@ -62,6 +64,9 @@ function create(){
     players.enableBody = true;
     createPlayer(400, 10, 1);
     createPlayer(200, 200, 2);
+
+    hummers = game.add.group();
+    hummers.enableBody = true;
 
     one = game.input.keyboard.addKey(Phaser.Keyboard.ONE);
     two = game.input.keyboard.addKey(Phaser.Keyboard.TWO);
@@ -97,6 +102,7 @@ function createBug(x, y){
 function update(){
   playerUpdate();
   carUpdate();
+  hummerUpdate();
 
   game.physics.arcade.overlap(players, bugs, playerBugCollisionHandler, null, this);
   game.physics.arcade.overlap(players, cars, playerCarCollisionHandler, null, this);
@@ -151,12 +157,27 @@ function playerBugCollisionHandler(player, bug){
         playerOneScore += 1;
         playerOneText.text = 'Player 1: ' + playerOneScore;
     }
+    console.log(playerOneScore)
+    if (playerOneScore === 1 || playerTwoScore === 1){
+      addHummer();
+    }
     player.x = 0
     player.y = 0
   }
   current_equation = equations[Math.floor(Math.random()*(equations.length - 0))]
   // MathQuestionText.text = current_equation.problem
   questionTimer = 0
+}
+
+function addHummer(){
+  if (!hummerSpawned){
+    createHummer(850, 250)
+  }
+  hummerSpawned = true;
+}
+
+function createHummer(x, y){
+  var hummer = hummers.create(x, y, 'hummer1');
 }
 
 
@@ -236,6 +257,15 @@ function carUpdate(){
       var heights = [0, 150, 300]
       c.x = game.width + 400;
       c.y = heights[rand]
+    }
+  })
+}
+
+function hummerUpdate(){
+  hummers.forEach(function(f){
+    f.body.velocity.x = 150
+    if (f.x > game.width + 200){
+      f.x = -400
     }
   })
 }
