@@ -1,0 +1,2 @@
+class Multiplayer < ApplicationRecord
+end
