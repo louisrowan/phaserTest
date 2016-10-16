@@ -1,3 +1,13 @@
+$(document).ready(function(){
+  window.setInterval(function(){
+    updateEquationText();
+  }, 200);
+})
+
+var updateEquationText = function(){
+  $('#equation_text_div').html(current_equation.problem)
+}
+
 var game = new Phaser.Game(1000, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
 var cursors;
@@ -66,7 +76,7 @@ function create(){
     playerOneText = game.add.text(32, 550, 'Player 1: ' + playerOneScore, { font: '20px Arial', fill: '#ffffff', align: 'left'});
     playerTwoText = game.add.text(32, 500, 'Player 2: ' + playerTwoScore, { font: '20px Arial', fill: '#ffffff', align: 'left'});
     finalScoreText = game.add.text(200, 400, '', { font: '50px Arial', fill: '#ffffff', align: 'left'});
-    MathQuestionText = game.add.text(400, 40, current_equation.problem, { font: '50px Arial', fill: '#ffffff', align: 'left', fontStyle: 'bold'});
+    // MathQuestionText = game.add.text(400, 40, current_equation.problem, { font: '50px Arial', fill: '#ffffff', align: 'left', fontStyle: 'bold'});
 }
 
 function createBug(x, y){
@@ -85,7 +95,7 @@ function update(){
   if (questionTimer >= 250){
     questionTimer = 0
     current_equation = equations[Math.floor(Math.random()*(equations.length - 0))]
-    MathQuestionText.text = current_equation.problem
+    // MathQuestionText.text = current_equation.problem
   }
 }
 
@@ -103,11 +113,18 @@ function playerBugCollisionHandler(player, bug){
         playerTwoText.text = 'Player 2: ' + playerTwoScore
       }
   } else {
+    if (player.player_id === 1){
+        playerTwoScore += 1;
+        playerTwoText.text = 'Player 2: ' + playerTwoScore;
+    } else if (player.player_id === 2){
+        playerOneScore += 1;
+        playerOneText.text = 'Player 1: ' + playerOneScore;
+    }
     player.x = 0
     player.y = 0
   }
   current_equation = equations[Math.floor(Math.random()*(equations.length - 0))]
-  MathQuestionText.text = current_equation.problem
+  // MathQuestionText.text = current_equation.problem
   questionTimer = 0
 }
 
